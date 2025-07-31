@@ -1,8 +1,23 @@
 import cv2 as cv
 import mediapipe as mp
-import matplotlib as m
+import numpy as np
 
-from StereoNormalPointSolver import StereoNormalPointSolver
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+
+from utils.StereoNormalPointSolver import StereoNormalPointSolver
+
+
+def draw_3dPoints(points):
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+
+    points = points.T
+
+    ax.scatter(points[0], points[2], points[1], c='b', marker='o')
+
+    plt.show()
+
 
 
 handSolution = mp.solutions.hands
@@ -43,24 +58,6 @@ while True:
     foundInLeft = False
     foundInRight = False
 
-    if hands_found1.multi_hand_landmarks and hands_found2.multi_hand_landmarks:
-        hand = hands_found1.multi_hand_landmarks[0]
-        h, w, c = frame1.shape
-        point = hand.landmark[8]
-        x, y = int(point.x * w), int(point.y * h)
-
-        coord1 = (x, y)
-
-        hand = hands_found2.multi_hand_landmarks[0]
-        h, w, c = frame2.shape
-        point = hand.landmark[8]
-        x, y = int(point.x * w), int(point.y * h)
-
-        coord2 = (x, y)
-
-        pos = solver.get_coordinate(coord1, coord2)
-        distance = solver.get_distance_from_cam(pos)
-
     if hands_found1.multi_hand_landmarks:
         foundInLeft = True
 
@@ -83,12 +80,12 @@ while True:
             cv.circle(frame2, (x, y), 10, (255, 0, 255), cv.FILLED)
 
     if foundInLeft and foundInRight:
-        coords3d = []
+        coords3d = np.zeros((21, 3))
         if len(coords1) == len(coords2):
             for i in range(len(coords1)):
-                pos = solver.get_coordinate(coord1[i], coord2[i])
+                pos = solver.get_coordinate(coords1[i], coords2[i])
                 distance = solver.get_distance_from_cam(pos)
-                coords3d.append(pos)
+                coords3d[i] = pos
             text = "Found In Both"
         else:
             print("ERROR, number of landmarks not same")
