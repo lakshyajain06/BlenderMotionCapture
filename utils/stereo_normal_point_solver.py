@@ -1,8 +1,5 @@
 import numpy as np
 
-def get_class():
-    print("hello")
-
 class StereoNormalPointSolver:
     def __init__(self, offset, camera_resolution, fov):
         self.camera_offset = offset

@@ -1,24 +1,9 @@
 import cv2 as cv
-import mediapipe as mp
 import numpy as np
-
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
-
-from utils.StereoNormalPointSolver import StereoNormalPointSolver
+import mediapipe as mp
 
 
-def draw_3dPoints(points):
-    fig = plt.figure()
-    ax = fig.add_subplot(111, projection='3d')
-
-    points = points.T
-
-    ax.scatter(points[0], points[2], points[1], c='b', marker='o')
-
-    plt.show()
-
-
+from utils.stereo_normal_point_solver import StereoNormalPointSolver
 
 handSolution = mp.solutions.hands
 hands = handSolution.Hands()
